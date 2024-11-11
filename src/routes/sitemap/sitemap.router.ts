@@ -7,7 +7,7 @@ import {
 
 const sitemapRouter = express.Router();
 
-sitemapRouter.get(
+sitemapRouter.post(
   '/sitemap-analyzer',
   requestValidator,
   handleValidationErrors,
