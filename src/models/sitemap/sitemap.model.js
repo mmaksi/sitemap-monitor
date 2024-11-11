@@ -56,9 +56,8 @@ function analyzeSitemapsModel(user, urls) {
             if (!(yield (0, sitemap_schema_1.getUserSitemaps)(user.id))) {
                 yield (0, sitemap_schema_1.insertSitemap)(user.id, urls, user.email, user.firstName);
             }
-            const response = yield (0, fetch_sitemaps_1.fetchSitemapPages)(urls, false, user.id);
+            yield (0, fetch_sitemaps_1.fetchSitemapPages)(urls, false, user.id);
             yield runCronJob(user);
-            return response;
         }
         catch (error) {
             console.error('Error in handleSubmit:', error);

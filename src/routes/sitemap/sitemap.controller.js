@@ -18,7 +18,8 @@ function httpAnalyzeSitemap(req, res) {
         const { user, urls } = req.body;
         const response = yield (0, sitemap_model_1.analyzeSitemapsModel)(user, urls);
         return res.status(201).json({
-            message: `Thank you! You will get a report by email on ${DateFormatter_1.dateFormatter.getReportDate()}.`,
+            message: response ||
+                `Thank you! You will get a report by email on ${DateFormatter_1.dateFormatter.getReportDate()}.`,
         });
     });
 }

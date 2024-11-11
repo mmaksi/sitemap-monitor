@@ -65,9 +65,8 @@ export async function analyzeSitemapsModel(user: IUser, urls: string[]) {
       await insertSitemap(user!.id, urls, user!.email, user!.firstName!);
     }
 
-    const response = await fetchSitemapPages(urls, false, user!.id);
+    await fetchSitemapPages(urls, false, user!.id);
     await runCronJob(user);
-    return response;
   } catch (error) {
     console.error('Error in handleSubmit:', error);
     return 'An error occurred. Please try again later.';

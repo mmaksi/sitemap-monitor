@@ -6,7 +6,9 @@ export async function httpAnalyzeSitemap(req: Request, res: Response) {
   const { user, urls } = req.body;
   const response = await analyzeSitemapsModel(user, urls);
   return res.status(201).json({
-    message: `Thank you! You will get a report by email on ${dateFormatter.getReportDate()}.`,
+    message:
+      response ||
+      `Thank you! You will get a report by email on ${dateFormatter.getReportDate()}.`,
   });
 }
 
