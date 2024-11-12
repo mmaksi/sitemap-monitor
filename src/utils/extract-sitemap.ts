@@ -1,5 +1,9 @@
-import { fetchSitemapPages } from "./fetch-sitemaps";
-import { getUserSitemaps, insertSitemap } from "./database/sitemap-schema";
+import { fetchSitemapPages } from './fetch-sitemaps';
+import {
+  deleteSitemapByUserId,
+  getUserSitemaps,
+  insertSitemap,
+} from './database/sitemap-schema';
 
 type FormData = {
   urls: string[];
@@ -7,10 +11,10 @@ type FormData = {
 
 // TODO User object comes with the body object
 const clerkUser = {
-  id: "",
-  firstName: "",
+  id: '',
+  firstName: '',
   primaryEmailAddress: {
-    emailAddress: "",
+    emailAddress: '',
   },
 };
 // const clerkUser = await currentUser();
@@ -21,9 +25,9 @@ const clerkUser = {
 export async function handleSubmit(formData: FormData) {
   const existingUser = await getUserSitemaps(clerkUser!.id);
   try {
-    // await deleteSitemapByUserId(user!.id); // TODO comment this line in productio
+    // await deleteSitemapByUserId(user!.id); // TODO comment this line in production
     if (existingUser) {
-      return "Sorry you have already requested a report.";
+      return 'Sorry you have already requested a report.';
     }
 
     const urls = formData.urls;
@@ -32,13 +36,13 @@ export async function handleSubmit(formData: FormData) {
         clerkUser!.id,
         urls,
         clerkUser!.primaryEmailAddress!.emailAddress,
-        clerkUser!.firstName!,
+        clerkUser!.firstName!
       );
     }
 
     return await fetchSitemapPages(urls, false, clerkUser!.id);
   } catch (error) {
-    console.error("Error in handleSubmit:", error);
-    return "An error occurred. Please try again later.";
+    console.error('Error in handleSubmit:', error);
+    return 'An error occurred. Please try again later.';
   }
 }
