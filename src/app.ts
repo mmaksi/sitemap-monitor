@@ -10,8 +10,6 @@ export const app = express();
 // Important middlewares
 app.use(express.json());
 
-app.use(cors());
-
 // Router mounting
 app.use('/api', api);
 
