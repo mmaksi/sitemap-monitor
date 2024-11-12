@@ -1,5 +1,4 @@
-import puppeteer from 'puppeteer';
-
+import { parse } from 'node-html-parser';
 import {
   getDatabaseUser,
   getUserWebsites,
@@ -11,8 +10,8 @@ import { dateFormatter } from '../utils/DateFormatter';
 import { readFileFromS3, uploadFile } from './aws';
 import { sendMailgunEmail } from './mailgun';
 import axios from 'axios';
-import cheerio from 'cheerio';
 
+import { html } from 'cheerio';
 export const dynamic = 'force-dynamic';
 // import { sendEmail } from '@/services/mailer'; // to send emails with Nodemailer
 
@@ -56,13 +55,13 @@ async function getTitles(urls: string[]) {
 
   for (let i = 0; i < urls.length; i++) {
     const url = urls[i];
+    console.log({ url });
     try {
       // Fetch the page content
       const { data } = await axios.get(url);
-      // Load the HTML into Cheerio
-      const $ = cheerio.load(data);
+      const root = parse(data);
       // Extract the title tag text
-      const title = $('title').text();
+      const title = root.querySelector('title')?.text || 'No title found';
       titles.push(title);
     } catch (error) {
       console.error(`Error fetching title for ${url}:`, error);

@@ -3,10 +3,8 @@ import { analyzeSitemapsModel } from '../../models/sitemap/sitemap.model';
 import { dateFormatter } from '../../utils/DateFormatter';
 
 export async function httpAnalyzeSitemap(req: Request, res: Response) {
-  console.log('1');
   const { user, urls } = req.body;
   const response = await analyzeSitemapsModel(user, urls);
-  console.log('77');
   return res.status(201).json({
     message:
       response ||

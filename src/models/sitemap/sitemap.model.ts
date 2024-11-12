@@ -20,35 +20,41 @@ interface IUser {
 
 async function runCronJob(user: IUser) {
   let counter = await getUserCounter(user.id);
-  const intervalId = setInterval(async () => {
-    console.log({ counter });
-    if (counter === undefined) clearInterval(intervalId);
-    if (counter !== undefined && counter < 3) {
-      // Run analyzeSitemaps every 10 minutes
-      await analyzeSitemaps(user.id);
-      console.log('Sitemap analyzed');
-      // Increment the counter each time analyzeSitemaps runs
-      counter++;
-    } else {
-      // After 30 minutes (3 * 10-minute intervals), run sendReport and deleteSitemapByUserId
-      try {
-        clearInterval(intervalId);
-        await sendReport(user.id);
-        await deleteSitemapByUserId(user.id);
-        console.log('Report sent');
-        // Clear the interval to stop further execution
-      } catch (error) {
-        console.error('Error occurred while trying to send the report:', error);
-        throw new ServerError('Error occurred while trying to send the report');
+  const intervalId = setInterval(
+    async () => {
+      console.log({ counter });
+      if (counter === undefined) clearInterval(intervalId);
+      if (counter !== undefined && counter < 3) {
+        // Run analyzeSitemaps every 10 minutes
+        await analyzeSitemaps(user.id);
+        console.log('Sitemap analyzed');
+        // Increment the counter each time analyzeSitemaps runs
+        counter++;
+      } else {
+        // After 30 minutes (3 * 10-minute intervals), run sendReport and deleteSitemapByUserId
+        try {
+          clearInterval(intervalId);
+          await sendReport(user.id);
+          await deleteSitemapByUserId(user.id);
+          console.log('Report sent');
+          // Clear the interval to stop further execution
+        } catch (error) {
+          console.error(
+            'Error occurred while trying to send the report:',
+            error
+          );
+          throw new ServerError(
+            'Error occurred while trying to send the report'
+          );
+        }
       }
-    }
-  }, 30 * 1000);
+    },
+    10 * 60 * 1000
+  );
 }
 
 export async function analyzeSitemapsModel(user: IUser, urls: string[]) {
-  console.log('2');
   const existingUser = await getUserSitemaps(user.id);
-  console.log('3');
   try {
     // await deleteSitemapByUserId(user!.id); // TODO comment this line in production
     if (existingUser) {
@@ -57,13 +63,10 @@ export async function analyzeSitemapsModel(user: IUser, urls: string[]) {
 
     if (!(await getUserSitemaps(user!.id))) {
       await insertSitemap(user!.id, urls, user!.email, user!.firstName!);
-      console.log('4');
     }
 
     await fetchSitemapPages(urls, false, user!.id);
-    console.log('5');
     await runCronJob(user);
-    console.log('6');
   } catch (error) {
     console.error('Error in handleSubmit:', error);
     return 'An error occurred. Please try again later.';
