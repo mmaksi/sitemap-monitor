@@ -54,7 +54,9 @@ async function runCronJob(user: IUser) {
 }
 
 export async function analyzeSitemapsModel(user: IUser, urls: string[]) {
+  console.log('2');
   const existingUser = await getUserSitemaps(user.id);
+  console.log('3');
   try {
     // await deleteSitemapByUserId(user!.id); // TODO comment this line in production
     if (existingUser) {
@@ -63,10 +65,13 @@ export async function analyzeSitemapsModel(user: IUser, urls: string[]) {
 
     if (!(await getUserSitemaps(user!.id))) {
       await insertSitemap(user!.id, urls, user!.email, user!.firstName!);
+      console.log('4');
     }
 
     await fetchSitemapPages(urls, false, user!.id);
+    console.log('5');
     await runCronJob(user);
+    console.log('6');
   } catch (error) {
     console.error('Error in handleSubmit:', error);
     return 'An error occurred. Please try again later.';
