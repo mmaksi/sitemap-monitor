@@ -1,17 +1,19 @@
-import puppeteer from "puppeteer";
+import puppeteer from 'puppeteer';
 
 import {
   getDatabaseUser,
   getUserWebsites,
   getSavedDate,
   deleteSitemapByUserId,
-} from "../utils/database/sitemap-schema";
-import { fetchSitemapPages } from "../utils/fetch-sitemaps";
-import { dateFormatter } from "../utils/DateFormatter";
-import { readFileFromS3, uploadFile } from "./aws";
-import { sendMailgunEmail } from "./mailgun";
+} from '../utils/database/sitemap-schema';
+import { fetchSitemapPages } from '../utils/fetch-sitemaps';
+import { dateFormatter } from '../utils/DateFormatter';
+import { readFileFromS3, uploadFile } from './aws';
+import { sendMailgunEmail } from './mailgun';
+import axios from 'axios';
+import cheerio from 'cheerio';
 
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic';
 // import { sendEmail } from '@/services/mailer'; // to send emails with Nodemailer
 
 type SitemapData = {
@@ -34,7 +36,7 @@ export async function sendReport(userId: string) {
   const trackedSitemapsArrayFile = `${userId}-tracked.json`;
   const trackedContentString = await readFileFromS3(trackedSitemapsArrayFile);
   const trackedUserSitemaps = JSON.parse(
-    trackedContentString,
+    trackedContentString
   ) as TrackedSitemapData[];
   try {
     // Send the unhashed resetToken via email
@@ -42,10 +44,10 @@ export async function sendReport(userId: string) {
       dbUser!.email,
       dbUser!.firstName,
       trackedUserSitemaps,
-      titles,
+      titles
     );
   } catch {
-    throw new Error("Error sending email");
+    throw new Error('Error sending email');
   }
 }
 
@@ -53,15 +55,20 @@ async function getTitles(urls: string[]) {
   const titles = [];
 
   for (let i = 0; i < urls.length; i++) {
-    const url = urls[i] as string;
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-    await page.goto(url);
-    // Extract the title after the page loads
-    const title = await page.title();
-    titles.push(title);
-    await browser.close();
+    const url = urls[i];
+    try {
+      // Fetch the page content
+      const { data } = await axios.get(url);
+      // Load the HTML into Cheerio
+      const $ = cheerio.load(data);
+      // Extract the title tag text
+      const title = $('title').text();
+      titles.push(title);
+    } catch (error) {
+      console.error(`Error fetching title for ${url}:`, error);
+    }
   }
+
   return titles;
 }
 
@@ -91,7 +98,7 @@ export const analyzeSitemaps = async (userId: string) => {
   const trackedSitemapsArrayFile = `${userId}-tracked.json`;
   const trackedContentString = await readFileFromS3(trackedSitemapsArrayFile);
   const trackedUserSitemaps = JSON.parse(
-    trackedContentString,
+    trackedContentString
   ) as TrackedSitemapData[];
   const trackedSet = trackedUserSitemaps.map((sitemap) => {
     return {
@@ -110,8 +117,8 @@ export const analyzeSitemaps = async (userId: string) => {
     if (firstSetData && trackedSetData) {
       const newPages = new Set(
         [...firstSetData.pages].filter(
-          (page) => !trackedSetData.pages.has(page),
-        ),
+          (page) => !trackedSetData.pages.has(page)
+        )
       );
       const trackedContent = {
         name: trackedSetData.name,
