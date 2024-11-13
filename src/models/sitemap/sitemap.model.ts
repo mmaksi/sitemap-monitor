@@ -52,7 +52,7 @@ export async function analyzeSitemapsModel(user: IUser, urls: string[]) {
   try {
     if (existingUser) {
       // await deleteSitemapByUserId(user.id); // TODO comment this line in production
-      // return 'Sorry you have already requested a report.';
+      return 'Sorry you have already requested a report.';
     }
 
     if (!(await getUserSitemaps(user!.id))) {
