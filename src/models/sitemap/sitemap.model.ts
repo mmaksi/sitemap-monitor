@@ -44,7 +44,7 @@ async function runCronJob(user: IUser) {
         throw new ServerError('Error occurred while trying to send the report');
       }
     }
-  }, 5 * 1000);
+  }, 1 * 1000);
 }
 
 export async function analyzeSitemapsModel(user: IUser, urls: string[]) {
