@@ -12,7 +12,7 @@ export const sendMailgunEmail = async (
   const mailgun = new Mailgun(FormData);
   const mg = mailgun.client({
     username: 'api',
-    key: '1a6e6bb8fb29c9204eb39a8298573c1b-72e4a3d5-60d26d73',
+    key: process.env.MAILGUN_KEY!,
     url: 'https://api.eu.mailgun.net',
   });
 

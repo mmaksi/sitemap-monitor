@@ -14,7 +14,8 @@ const streamToString = (stream: Readable): Promise<string> =>
 
 const s3Client = new S3Client({
   region: 'eu-north-1',
-  // credentials: { // TODO enable in development
+  // TODO remove credentials in production
+  // credentials: {
   //   accessKeyId: process.env.ACCESS_KEY!,
   //   secretAccessKey: process.env.SECRET_ACCESS_KEY!,
   // },

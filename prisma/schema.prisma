@@ -34,3 +34,11 @@ type TrackedSitemapData {
   trackedDate    String
   pages          String[]
 }
+
+model Job {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String // Reference to the user who submitted the job
+  startDate DateTime @default(now()) // When the job was created
+  runCount  Int      @default(0) // Number of times the job has run
+  maxRuns   Int      @default(7) // Maximum number of times the job should run
+}

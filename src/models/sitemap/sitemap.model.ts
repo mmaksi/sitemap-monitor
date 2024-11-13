@@ -11,7 +11,8 @@ import {
   resetCounter,
 } from '../../utils/database/sitemap-schema';
 import { fetchSitemapPages } from '../../utils/fetch-sitemaps';
-
+import cron from 'node-cron';
+import { getAllCronJobs } from '../../utils/database/cron-job';
 interface IUser {
   id: string;
   email: string;
