@@ -15,10 +15,10 @@ const streamToString = (stream: Readable): Promise<string> =>
 const s3Client = new S3Client({
   region: 'eu-north-1',
   // TODO remove credentials in production
-  credentials: {
-    accessKeyId: process.env.ACCESS_KEY!,
-    secretAccessKey: process.env.SECRET_ACCESS_KEY!,
-  },
+  // credentials: {
+  //   accessKeyId: process.env.ACCESS_KEY!,
+  //   secretAccessKey: process.env.SECRET_ACCESS_KEY!,
+  // },
 });
 
 export const uploadFile = async <T extends string>(
