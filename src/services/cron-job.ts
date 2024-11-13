@@ -37,6 +37,7 @@ export async function sendReport(userId: string) {
   const trackedUserSitemaps = JSON.parse(
     trackedContentString
   ) as TrackedSitemapData[];
+  console.log(trackedUserSitemaps);
   try {
     // Send the unhashed resetToken via email
     return await sendMailgunEmail(
@@ -45,7 +46,8 @@ export async function sendReport(userId: string) {
       trackedUserSitemaps,
       titles
     );
-  } catch {
+  } catch (e) {
+    console.log(e);
     throw new Error('Error sending email');
   }
 }

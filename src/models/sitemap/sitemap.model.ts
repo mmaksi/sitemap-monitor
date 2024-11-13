@@ -20,37 +20,30 @@ interface IUser {
 
 async function runCronJob(user: IUser) {
   let counter = await getUserCounter(user.id);
-  const intervalId = setInterval(
-    async () => {
-      console.log({ counter });
-      if (counter === undefined) clearInterval(intervalId);
-      if (counter !== undefined && counter < 3) {
-        // Run analyzeSitemaps every 10 minutes
-        await analyzeSitemaps(user.id);
-        console.log('Sitemap analyzed');
-        // Increment the counter each time analyzeSitemaps runs
-        counter++;
-      } else {
-        // After 30 minutes (3 * 10-minute intervals), run sendReport and deleteSitemapByUserId
-        try {
-          clearInterval(intervalId);
-          await sendReport(user.id);
-          await deleteSitemapByUserId(user.id);
-          console.log('Report sent');
-          // Clear the interval to stop further execution
-        } catch (error) {
-          console.error(
-            'Error occurred while trying to send the report:',
-            error
-          );
-          throw new ServerError(
-            'Error occurred while trying to send the report'
-          );
-        }
+  const intervalId = setInterval(async () => {
+    console.log({ counter });
+    if (counter === undefined) clearInterval(intervalId);
+    if (counter !== undefined && counter < 3) {
+      // Run analyzeSitemaps every 10 minutes
+      await analyzeSitemaps(user.id);
+      console.log('Sitemap analyzed');
+      // Increment the counter each time analyzeSitemaps runs
+      counter++;
+    } else {
+      // After 30 minutes (3 * 10-minute intervals), run sendReport and deleteSitemapByUserId
+      try {
+        clearInterval(intervalId);
+        console.log(user.id);
+        await sendReport(user.id);
+        await deleteSitemapByUserId(user.id);
+        console.log('Report sent');
+        // Clear the interval to stop further execution
+      } catch (error) {
+        console.error(error);
+        throw new ServerError('Error occurred while trying to send the report');
       }
-    },
-    10 * 60 * 1000
-  );
+    }
+  }, 5 * 1000);
 }
 
 export async function analyzeSitemapsModel(user: IUser, urls: string[]) {
