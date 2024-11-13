@@ -50,8 +50,8 @@ export async function analyzeSitemapsModel(user: IUser, urls: string[]) {
   const existingUser = await getUserSitemaps(user.id);
   try {
     if (existingUser) {
-      await deleteSitemapByUserId(existingUser); // TODO comment this line in production
-      return 'Sorry you have already requested a report.';
+      await deleteSitemapByUserId(user.id); // TODO comment this line in production
+      // return 'Sorry you have already requested a report.';
     }
 
     if (!(await getUserSitemaps(user!.id))) {
