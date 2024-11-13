@@ -3,9 +3,6 @@ import { TrackedSitemapData } from '@prisma/client';
 import FormData from 'form-data';
 import Mailgun from 'mailgun.js';
 
-console.log(process.env.MAILGUN_KEY!);
-console.log(process.env.DATABASE_URL!);
-
 export const sendMailgunEmail = async (
   userEmail: string,
   userName: string,
@@ -15,7 +12,7 @@ export const sendMailgunEmail = async (
   const mailgun = new Mailgun(FormData);
   const mg = mailgun.client({
     username: 'api',
-    key: process.env.MAILGUN_KEY!,
+    key: '1a6e6bb8fb29c9204eb39a8298573c1b-72e4a3d5-60d26d73',
   });
 
   const emailData = {
@@ -55,7 +52,10 @@ export const sendMailgunEmail = async (
   };
 
   try {
-    await mg.messages.create(process.env.MAILGUN_DOMAIN!, emailData);
+    await mg.messages.create(
+      'sandboxe9f7388d76eb49fcba6bef1819c3075e.mailgun.org',
+      emailData
+    );
     console.warn('sent by mailgun');
   } catch (error) {
     console.log(error);
