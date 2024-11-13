@@ -49,8 +49,8 @@ async function runCronJob(user: IUser) {
 export async function analyzeSitemapsModel(user: IUser, urls: string[]) {
   const existingUser = await getUserSitemaps(user.id);
   try {
-    // await deleteSitemapByUserId(user!.id); // TODO comment this line in production
     if (existingUser) {
+      await deleteSitemapByUserId(existingUser); // TODO comment this line in production
       return 'Sorry you have already requested a report.';
     }
 
