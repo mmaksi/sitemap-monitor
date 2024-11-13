@@ -6,6 +6,9 @@ import Mailgun from 'mailgun.js';
 const DOMAIN = process.env.MAILGUN_DOMAIN!;
 const API_KEY = process.env.MAILGUN_KEY!;
 
+console.log({ DOMAIN });
+console.log({ API_KEY });
+
 export const sendMailgunEmail = async (
   userEmail: string,
   userName: string,
